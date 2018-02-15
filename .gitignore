@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# My modification
+booleanFunction.pro
+booleanFunction.pro.user
+
