@@ -2,7 +2,7 @@
 #define BF_H
 
 typedef unsigned int Base;
-const unsigned int NUM_BIT_IN_BASE = 8*sizeof(Base);
+const int NUM_BIT_IN_BASE = 8*sizeof(Base);
 
 class bf
 {
@@ -20,7 +20,7 @@ public:
 
     ~bf ();
 
-//    unsigned int lenFunc(); // may not fit in "int"
+    void print() const;
 };
 
 #endif // BF_H
