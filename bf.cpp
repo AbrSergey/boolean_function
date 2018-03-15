@@ -16,7 +16,8 @@ bf::bf(std::string str)
     // computing m_var
     unsigned int tmpLen = lenStr;
     m_var = 0;
-    while (tmpLen != 1){
+    while (tmpLen != 1)
+    {
         tmpLen >>= 1;
         m_var++;
     }
@@ -28,13 +29,15 @@ bf::bf(std::string str)
     m_len = whole;
     if (remainder != 0) m_len++;
 
-    // memory allocation for m_func
+    // allocation memory for m_func
     m_func = new Base[m_len];
 
     // write str to m_func
     for (int i = 0; i < whole; i++)
-        for (int j = 0; j < NUM_BIT_IN_BASE; j++){
-            char ch = str[lenStr - (i * NUM_BIT_IN_BASE + j) - 1];
+        for (int j = 0; j < NUM_BIT_IN_BASE; j++)
+        {
+            int x = lenStr - (i * NUM_BIT_IN_BASE + j) - 1;
+            char ch = str[x];
             assert(ch == '0' || ch == '1');
 
             if (ch == '1') m_func[i] |= 1;
@@ -42,7 +45,8 @@ bf::bf(std::string str)
         }
 
     if (remainder != 0)
-        for (int j = 0; j < remainder; j++){
+        for (int j = 0; j < remainder; j++)
+        {
             char ch = str[lenStr - (whole * NUM_BIT_IN_BASE + j) - 1];
             assert(ch == '0' || ch == '1');
 
@@ -50,6 +54,35 @@ bf::bf(std::string str)
             if (j < remainder - 1) m_func[whole] <<= 1;
         }
 
+}
+
+bf::bf(int numberVar)
+{
+    assert (numberVar > 0 && numberVar <= 31);
+
+    m_var = numberVar;
+
+    unsigned int numberBits = 1 << m_var;
+
+    // computing m_len
+    int whole = numberBits / NUM_BIT_IN_BASE;
+    int remainder = numberBits % NUM_BIT_IN_BASE;
+
+    m_len = whole;
+    if (remainder != 0) m_len++;
+
+    // allocation memory for m_func
+    m_func = new Base[m_len];
+
+    // fill in m_func ramdom bits
+    for (unsigned int i = 0; i < m_len; i++)
+        m_func[i] = rand() - rand();
+
+    if (remainder != 0) // can without it?
+    {
+        m_func[m_len - 1] <<= remainder;
+        m_func[m_len - 1] >>= remainder;
+    }
 }
 
 bf::~bf()
@@ -67,9 +100,11 @@ void bf::print() const
     int remainder = (2 << (m_var - 1)) % NUM_BIT_IN_BASE;
 
     unsigned int funcHelper;
-    for (int i = 0; i < whole; i++){
+    for (int i = 0; i < whole; i++)
+    {
         funcHelper = m_func[i];
-        for (int j = 0; j < NUM_BIT_IN_BASE; j++){
+        for (int j = 0; j < NUM_BIT_IN_BASE; j++)
+        {
             if ((funcHelper & 1) == 1) std::cout << "1";
             else std::cout << "0";
 
@@ -79,7 +114,8 @@ void bf::print() const
 
     if (remainder != 0){
         funcHelper = m_func[m_len - 1];
-        for (int j = 0; j < remainder; j++){
+        for (int j = 0; j < remainder; j++)
+        {
             if ((funcHelper & 1) == 1) std::cout << "1";
             else std::cout << "0";
 
