@@ -16,7 +16,7 @@ private:
 public:
     bf ();
 
-    bf (std::string str);   // the low-order bits correspond to the low-order bits. In the base bits in reverse order
+    bf (std::string str);   // data[0]&1 = str[0], data[0]&10 = str[1], data[1]&1 = str[32], data[1]&10 = str[33]
 
     bf (int numberVar);    // constructor of random bits
 

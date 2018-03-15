@@ -36,7 +36,7 @@ bf::bf(std::string str)
     for (int i = 0; i < whole; i++)
         for (int j = 0; j < NUM_BIT_IN_BASE; j++)
         {
-            int x = lenStr - (i * NUM_BIT_IN_BASE + j) - 1;
+            int x = (i + 1) * NUM_BIT_IN_BASE - j - 1;
             char ch = str[x];
             assert(ch == '0' || ch == '1');
 
