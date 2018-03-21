@@ -22,6 +22,8 @@ public:
 
     ~bf (); // check to correct
 
+    unsigned int weight (); // MAX weight = 2147483648
+
     void print() const;
 };
 

@@ -90,6 +90,26 @@ bf::~bf()
     if (m_func) delete [] m_func;
 }
 
+unsigned int bf::weight()
+{
+    assert (m_len != 0);    // boolean function not set
+
+    unsigned int result = 0;
+
+    for (unsigned int i = 0; i < m_len; i++)
+    {
+        unsigned int n = 0; // n is weight of current base
+        Base x = m_func[i];
+        while (x)
+        {
+            x &= x - 1;
+            n++;
+        }
+        result += n;
+    }
+    return result;
+}
+
 void bf::print() const
 {
     std::cout << "m_len = " << m_len << std::endl;

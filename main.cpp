@@ -13,8 +13,7 @@ int main()
 
     x.print();
 
-    bf y(5);
-    y.print();
+    cout << "weight = " << x.weight() << endl;
 
     return 0;
 }
