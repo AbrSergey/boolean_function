@@ -85,14 +85,50 @@ bf::bf(int numberVar)
     }
 }
 
+bf &bf::operator =(const bf &inputFunc)
+{
+    m_var = inputFunc.m_var;
+
+    if (m_len != inputFunc.m_len)
+    {
+        m_len = inputFunc.m_len;
+
+        delete [] m_func;
+
+        m_func = new Base [m_len];
+    }
+
+    for (unsigned int i = 0; i < m_len; i++)
+        m_func[i] = inputFunc.m_func[i];
+
+    return *this;
+}
+
+unsigned int bf::operator [](const Base var) const
+{
+    assert (m_len != 0);    // function must be specified
+    unsigned int check = 1 << m_var;
+    assert (var < check);   // var must be <= ('1' * m_var)
+
+    unsigned int whole = var / NUM_BIT_IN_BASE; // it is number of base
+    unsigned int remainder = var % NUM_BIT_IN_BASE; // it is number of bit in m_func[whole]
+    unsigned int mask = 1 << remainder;
+    unsigned int res = m_func[whole] & mask;
+    res >>= remainder;
+
+    assert (res == 0 || res == 1);
+
+    return res;
+}
+
 bf::~bf()
 {
     if (m_func) delete [] m_func;
 }
 
-unsigned int bf::weight()
+unsigned int bf::weight() const
 {
-    assert (m_len != 0);    // boolean function not set
+    assert (m_len != 0);    // function must be specified
 
     unsigned int result = 0;
 
@@ -108,6 +144,13 @@ unsigned int bf::weight()
         result += n;
     }
     return result;
+}
+
+void bf::mobius() const
+{
+    assert (m_len != 0);    // function must be specified
+
+
 }
 
 void bf::print() const
@@ -144,4 +187,9 @@ void bf::print() const
     }
 
     std::cout << std::endl;
+}
+
+Base bf::var() const
+{
+    return m_var;
 }

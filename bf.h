@@ -20,11 +20,19 @@ public:
 
     bf (int numberVar);    // constructor of random bits
 
+    bf &operator = ( const bf & inputFunc );
+
+    unsigned int operator [](const Base var) const;  // max var = '1' * 31 = 2147483647
+
     ~bf (); // check to correct
 
-    unsigned int weight (); // MAX weight = 2147483648
+    unsigned int weight () const; // MAX weight = 2147483648
+
+    void mobius () const; // Mobius function. It make the boolean values and print them
 
     void print() const;
+
+    Base var () const;
 };
 
 #endif // BF_H
