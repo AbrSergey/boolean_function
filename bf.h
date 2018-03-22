@@ -28,7 +28,7 @@ public:
 
     unsigned int weight () const; // MAX weight = 2147483648
 
-    void mobius () const; // Mobius function. It make the boolean values and print them
+    void mobius (bf & mobFunc) const; // Mobius function. It make the boolean values and print them
 
     void print() const;
 

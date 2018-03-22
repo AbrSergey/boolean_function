@@ -146,11 +146,36 @@ unsigned int bf::weight() const
     return result;
 }
 
-void bf::mobius() const
+void bf::mobius(bf &mobFunc) const
 {
     assert (m_len != 0);    // function must be specified
 
+    // initialiation data for mobius
 
+//    bf mobiusFunc;
+//    mobiusFunc.m_var = m_var;
+//    mobiusFunc.m_len = m_len;
+//    mobiusFunc.m_func = new Base [m_len];
+
+    // fill in mobiusData
+
+    Base maxVar = 1 << m_var;
+
+    for (Base i = 0; i < maxVar; i++)
+    {
+        unsigned int tmpMobiusData = 0;
+
+        for (Base j = 0; j <= i; j++)
+        {
+            Base tmp = j | i;
+            if (tmp <= i) tmpMobiusData = (tmpMobiusData + (*this)[j]) % 2;
+        }
+
+        Base whole = i / NUM_BIT_IN_BASE;
+        Base remainder = i % NUM_BIT_IN_BASE;
+        Base mask = tmpMobiusData << remainder;
+        mobFunc.m_func[whole] |= mask;
+    }
 }
 
 void bf::print() const
