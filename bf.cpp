@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <assert.h>
 #include <math.h>
@@ -56,12 +57,11 @@ bf::bf(std::string str)
 
 }
 
-bf::bf(int numberVar)
+bf::bf(int numberVar, FillType filltype)
 {
     assert (numberVar > 0 && numberVar <= 31);
 
     m_var = numberVar;
-
     unsigned int numberBits = 1 << m_var;
 
     // computing m_len
@@ -74,14 +74,36 @@ bf::bf(int numberVar)
     // allocation memory for m_func
     m_func = new Base[m_len];
 
-    // fill in m_func ramdom bits
-    for (unsigned int i = 0; i < m_len; i++)
-        m_func[i] = rand() - rand();
+    switch (filltype){
 
-    if (remainder != 0) // can without it?
+    case FillTypeRandom:
     {
-        m_func[m_len - 1] <<= remainder;
-        m_func[m_len - 1] >>= remainder;
+        // fill in m_func ramdom bits
+        for (unsigned int i = 0; i < m_len; i++)
+            m_func[i] = rand() - rand();
+
+        if (remainder != 0) m_func[m_len - 1] >>= NUM_BIT_IN_BASE - remainder;
+
+        break;
+    }
+
+    case FillTypeZero:
+    {
+        // fill in m_func with ZEROs
+        for (Base i = 0; i < m_len; i++) m_func[i] = 0;
+        break;
+    }
+
+    case FillTypeOne:
+    {
+        // fill in m_func with ONEs
+        for (Base i = 0; i < m_len; i++) m_func[i] = MAX_NUMBER_IN_BASE;
+        if (remainder != 0) m_func[m_len - 1] >>= NUM_BIT_IN_BASE - remainder;
+        break;
+    }
+
+    default:
+        assert("!Invalid FillType");
     }
 }
 
@@ -121,6 +143,18 @@ unsigned int bf::operator [](const Base var) const
     return res;
 }
 
+bool bf::operator ==(const bf &inputFunc) const
+{
+    if (m_var != inputFunc.m_var) return false;
+
+    assert(m_len == inputFunc.m_len); // they must be equal!!!!
+
+    for (Base i = 0; i < m_len; i++)
+        if (m_func[i] != inputFunc.m_func[i]) return false;
+
+    return true;
+}
+
 bf::~bf()
 {
     if (m_func) delete [] m_func;
@@ -134,14 +168,12 @@ unsigned int bf::weight() const
 
     for (unsigned int i = 0; i < m_len; i++)
     {
-        unsigned int n = 0; // n is weight of current base
         Base x = m_func[i];
         while (x)
         {
             x &= x - 1;
-            n++;
+            result++;
         }
-        result += n;
     }
     return result;
 }

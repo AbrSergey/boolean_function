@@ -15,27 +15,45 @@ void testOperator ()
         cout << "x[" << i << "] = " << x[i] << endl;
 }
 
-void testMobius()
+void testWeight ()
 {
-    bf x("00110101");
+    for (int i = 1; i < 32; i++){
 
-    x.print();
+        bf x(i);
+        unsigned int w = x.weight();
+
+        std::cout << "w = " << w << std::endl;
+
+        unsigned int n = 1 << i;
+        float f = float(w) / float(n);
+
+        std::cout << "f = " << std::fixed << f << std::endl;
+        std::cout << std::endl;
+    }
+}
+
+void testMobius ()
+{
+    int q = 15;
+    bf x(q);
+
+//    x.print();
 
     // initialization mobFunc
 
-    bf mobFunc("00000000");
+    bf mobFunc(q, FillTypeZero);
 
     x.mobius(mobFunc);
 
-    mobFunc.print();
+//    mobFunc.print();
 
     // test
 
-    bf z("00000000");
+    bf z(q, FillTypeZero);
 
     mobFunc.mobius(z);
 
-    z.print();
+//    z.print();
 
     if (z == x) cout << "TRUE" << endl;
     else cout << "False" << endl;
@@ -43,10 +61,9 @@ void testMobius()
 
 int main()
 {
-    testMobius();
+    testWeight();
 
     return 0;
 }
 
-
-//написать оператор == и сделать нормальный тест для мобиуса
+//сделать нормальный тест для мобиуса

@@ -3,6 +3,14 @@
 
 typedef unsigned int Base;
 const int NUM_BIT_IN_BASE = 8*sizeof(Base);
+const unsigned int MAX_NUMBER_IN_BASE = 4294967295;
+
+enum FillType
+{
+    FillTypeZero,
+    FillTypeRandom,
+    FillTypeOne
+};
 
 class bf
 {
@@ -18,11 +26,13 @@ public:
 
     bf (std::string str);   // data[0]&1 = str[0], data[0]&10 = str[1], data[1]&1 = str[32], data[1]&10 = str[33]
 
-    bf (int numberVar);    // constructor of random bits
+    explicit bf (int numberVar, FillType filltype = FillTypeRandom);    // constructor of random bits
 
     bf &operator = ( const bf & inputFunc );
 
     unsigned int operator [](const Base var) const;  // max var = '1' * 31 = 2147483647
+
+    bool operator == (const bf & inputFunc) const;
 
     ~bf (); // check to correct
 
