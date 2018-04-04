@@ -34,34 +34,26 @@ void testWeight ()
 
 void testMobius ()
 {
-    int q = 15;
-    bf x(q);
+    int q = 6;
 
-//    x.print();
+    for (int i = 0; i < 1; i++)
+    {
+        bf x(q, FillTypeRandom);
 
-    // initialization mobFunc
+        bf y = x.mobius();
 
-    bf mobFunc(q, FillTypeZero);
+        bf z = y.mobius();
 
-    x.mobius(mobFunc);
-
-//    mobFunc.print();
-
-    // test
-
-    bf z(q, FillTypeZero);
-
-    mobFunc.mobius(z);
-
-//    z.print();
-
-    if (z == x) cout << "TRUE" << endl;
-    else cout << "False" << endl;
+        if (z == x) cout << "TRUE" << endl;
+        else cout << "False" << endl;
+    }
 }
 
 int main()
 {
-    testWeight();
+//    testWeight();
+
+    testMobius();
 
     return 0;
 }

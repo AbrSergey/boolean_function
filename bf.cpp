@@ -57,6 +57,15 @@ bf::bf(std::string str)
 
 }
 
+bf::bf(const bf &input)
+{
+    m_var = input.m_var;
+    m_len = input.m_len;
+    m_func = new Base[m_len];
+
+    for (Base i = 0; i < m_len; i++) m_func[i] = input.m_func[i];
+}
+
 bf::bf(int numberVar, FillType filltype)
 {
     assert (numberVar > 0 && numberVar <= 31);
@@ -155,6 +164,83 @@ bool bf::operator ==(const bf &inputFunc) const
     return true;
 }
 
+bf bf::operator >>(const Base numberShifts) const
+{
+    // this operator write for mobius function, where 0 < numberShifts < 2**31==2147483648
+    assert (numberShifts > 0 && numberShifts < 2147483648);
+
+    bf result = (*this);
+
+    int whole = numberShifts / NUM_BIT_IN_BASE;
+    int remainder = numberShifts % NUM_BIT_IN_BASE;
+
+    if (whole != 0) // base shift
+    {
+        for (int i = m_len - 1; i >= whole; i--)
+            result.m_func[i] = result.m_func[i - whole];
+
+        for (int i = 0; i < whole; i++)
+            result.m_func[i] = 0;
+    }
+
+    // remainder shift
+    // construct the mask
+
+    Base mask = 1;
+    for (int j = 1; j < remainder; j++)
+    {
+        mask <<= 1;
+        mask |= 1;
+    }
+    mask <<= (NUM_BIT_IN_BASE - remainder);
+
+    // shift algorithm
+
+    result.m_func[m_len - 1] <<= remainder;
+
+    // to remove unnecessary bits
+    Base tmp = NUM_BIT_IN_BASE - ((1 << m_var) % NUM_BIT_IN_BASE);
+    result.m_func[m_len - 1] <<= tmp;
+    result.m_func[m_len - 1] >>= tmp;
+
+    for (Base i = m_len - 1; i > 0; i--)
+    {
+        Base help = result.m_func[i - 1] & mask;
+
+        help >>= (NUM_BIT_IN_BASE - remainder);
+
+        result.m_func[i] |= help;
+
+        result.m_func[i - 1] <<= numberShifts;
+    }
+
+    return result;
+}
+
+bf bf::operator &(const Base input) const
+{
+    assert (m_len > 0);
+
+    bf result = (*this);
+
+    for (Base i = 0; i < m_len; i++)
+        result.m_func[i] &= input;
+
+    return result;
+}
+
+bf bf::operator ^(const bf input) const
+{
+    assert ((m_len == input.m_len) && (m_var == input.m_var) && m_len > 0);
+
+    bf result(m_var);
+
+    for (Base i = 0; i < m_len; i++)
+        result.m_func[i] = m_func[i] ^ input.m_func[i];
+
+    return result;
+}
+
 bf::~bf()
 {
     if (m_func) delete [] m_func;
@@ -178,42 +264,56 @@ unsigned int bf::weight() const
     return result;
 }
 
-void bf::mobius(bf &mobFunc) const
+bf bf::mobius() const
 {
     assert (m_len != 0);    // function must be specified
 
-    // initialiation data for mobius
+//    // initialiation data for mobius
 
-//    bf mobiusFunc;
-//    mobiusFunc.m_var = m_var;
-//    mobiusFunc.m_len = m_len;
-//    mobiusFunc.m_func = new Base [m_len];
+////    bf mobiusFunc;
+////    mobiusFunc.m_var = m_var;
+////    mobiusFunc.m_len = m_len;
+////    mobiusFunc.m_func = new Base [m_len];
 
-    // fill in mobiusData
+//    // fill in mobiusData
 
-    Base maxVar = 1 << m_var;
+//    Base maxVar = 1 << m_var;
 
-    for (Base i = 0; i < maxVar; i++)
-    {
-        unsigned int tmpMobiusData = 0;
+//    for (Base i = 0; i < maxVar; i++)
+//    {
+//        unsigned int tmpMobiusData = 0;
 
-        for (Base j = 0; j <= i; j++)
-        {
-            Base tmp = j | i;
-            if (tmp <= i) tmpMobiusData = (tmpMobiusData + (*this)[j]) % 2;
-        }
+//        for (Base j = 0; j <= i; j++)
+//        {
+//            Base tmp = j | i;
+//            if (tmp <= i) tmpMobiusData = (tmpMobiusData + (*this)[j]) % 2;
+//        }
 
-        Base whole = i / NUM_BIT_IN_BASE;
-        Base remainder = i % NUM_BIT_IN_BASE;
-        Base mask = tmpMobiusData << remainder;
-        mobFunc.m_func[whole] |= mask;
-    }
+//        Base whole = i / NUM_BIT_IN_BASE;
+//        Base remainder = i % NUM_BIT_IN_BASE;
+//        Base mask = tmpMobiusData << remainder;
+//        mobFunc.m_func[whole] |= mask;
+//    }
+
+    Base const1 = 0xaaaaaaaa;   // 0b10101010101010101010101010101010
+    Base const2 = 0xcccccccc;   // 0b11001100110011001100110011001100
+    Base const3 = 0xf0f0f0f0;   // 0b11110000111100001111000011110000
+    Base const4 = 0xff00ff00;   // 0b11111111000000001111111100000000
+    Base const5 = 0xffff0000;   // 0b11111111111111110000000000000000
+
+    bf g = (*this);
+
+    g = g ^ ((g >> 1) & const1);
+    g = g ^ ((g >> 2) & const2);
+    g = g ^ ((g >> 4) & const3);
+
+    return g;
 }
 
 void bf::print() const
 {
-    std::cout << "m_len = " << m_len << std::endl;
-    std::cout << "m_var = " << m_var << std::endl;
+//    std::cout << "m_len = " << m_len << std::endl;
+//    std::cout << "m_var = " << m_var << std::endl;
     std::cout << "m_func = ";
 
     int whole = (2 << (m_var - 1)) / NUM_BIT_IN_BASE;

@@ -26,6 +26,8 @@ public:
 
     bf (std::string str);   // data[0]&1 = str[0], data[0]&10 = str[1], data[1]&1 = str[32], data[1]&10 = str[33]
 
+    bf (const bf & input);
+
     explicit bf (int numberVar, FillType filltype = FillTypeRandom);    // constructor of random bits
 
     bf &operator = ( const bf & inputFunc );
@@ -34,11 +36,17 @@ public:
 
     bool operator == (const bf & inputFunc) const;
 
+    bf operator >> (const Base numberShifts) const;
+
+    bf operator & (const Base input) const;
+
+    bf operator ^ (const bf input) const;
+
     ~bf (); // check to correct
 
     unsigned int weight () const; // MAX weight = 2147483648
 
-    void mobius (bf & mobFunc) const; // Mobius function. It make the boolean values and print them
+    bf mobius() const; // Mobius function. It make the boolean values and print them
 
     void print() const;
 
