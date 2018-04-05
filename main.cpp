@@ -36,11 +36,15 @@ void testMobius ()
 {
     int q = 6;
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
     {
-        bf x(q, FillTypeRandom);
+        bf x(6);
 
         bf y = x.mobius();
+
+//        x.print();
+
+//        y.print();
 
         bf z = y.mobius();
 

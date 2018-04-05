@@ -217,14 +217,14 @@ bf bf::operator >>(const Base numberShifts) const
     return result;
 }
 
-bf bf::operator &(const Base input) const
+bf bf::operator &(const bf input) const
 {
     assert (m_len > 0);
 
     bf result = (*this);
 
     for (Base i = 0; i < m_len; i++)
-        result.m_func[i] &= input;
+        result.m_func[i] = m_func[i] & input.m_func[i];
 
     return result;
 }
@@ -303,9 +303,49 @@ bf bf::mobius() const
 
     bf g = (*this);
 
-    g = g ^ ((g >> 1) & const1);
-    g = g ^ ((g >> 2) & const2);
-    g = g ^ ((g >> 4) & const3);
+    Base i = 0;
+
+    for (; i < 5 && i < m_var; i++)
+    {
+        Base cons;
+
+        if (i == 0) cons = const1;
+        if (i == 1) cons = const2;
+        if (i == 2) cons = const3;
+        if (i == 3) cons = const4;
+        if (i == 4) cons = const5;
+
+        bf h (m_var, FillTypeZero);
+
+        for (Base j = 0; j < m_len; j++)
+            h.m_func[j] = cons;
+
+        g = g ^ ((g >> (1 << i)) & h);
+    }
+
+    for (; i >= 5 && i < m_var; i++)
+    {
+        int subBase = 1 << (i - 5); // quantity of bases with same value
+
+        assert (m_len % subBase == 0);  // ?? subBase*2 ??
+
+        bf h (m_var, FillTypeZero);
+
+        bool flag = false;
+
+        for (Base j = 0; j < m_len / subBase; j++)
+        {
+            for (int k = 0; k < subBase; k++)
+            {
+                if (!flag) h.m_func[j * subBase + k] = 0x00000000;
+                else h.m_func[j * subBase + k] = 0xffffffff;
+            }
+            if (flag == true) flag = false;
+            else flag = true;
+        }
+
+        g = g ^ ((g >> (1 << i)) & h);
+    }
 
     return g;
 }

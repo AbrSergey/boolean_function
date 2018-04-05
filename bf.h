@@ -38,7 +38,7 @@ public:
 
     bf operator >> (const Base numberShifts) const;
 
-    bf operator & (const Base input) const;
+    bf operator & (const bf input) const;
 
     bf operator ^ (const bf input) const;
 
