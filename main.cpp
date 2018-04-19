@@ -34,11 +34,11 @@ void testWeight ()
 
 void testMobius ()
 {
-    int q = 6;
+    int q = 7;
 
     for (int i = 0; i < 10; i++)
     {
-        bf x(6);
+        bf x(q);
 
         bf y = x.mobius();
 

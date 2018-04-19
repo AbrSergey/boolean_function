@@ -268,83 +268,113 @@ bf bf::mobius() const
 {
     assert (m_len != 0);    // function must be specified
 
-//    // initialiation data for mobius
+////    // initialiation data for mobius
 
-////    bf mobiusFunc;
-////    mobiusFunc.m_var = m_var;
-////    mobiusFunc.m_len = m_len;
-////    mobiusFunc.m_func = new Base [m_len];
+//////    bf mobiusFunc;
+//////    mobiusFunc.m_var = m_var;
+//////    mobiusFunc.m_len = m_len;
+//////    mobiusFunc.m_func = new Base [m_len];
 
-//    // fill in mobiusData
+////    // fill in mobiusData
 
-//    Base maxVar = 1 << m_var;
+////    Base maxVar = 1 << m_var;
 
-//    for (Base i = 0; i < maxVar; i++)
+////    for (Base i = 0; i < maxVar; i++)
+////    {
+////        unsigned int tmpMobiusData = 0;
+
+////        for (Base j = 0; j <= i; j++)
+////        {
+////            Base tmp = j | i;
+////            if (tmp <= i) tmpMobiusData = (tmpMobiusData + (*this)[j]) % 2;
+////        }
+
+////        Base whole = i / NUM_BIT_IN_BASE;
+////        Base remainder = i % NUM_BIT_IN_BASE;
+////        Base mask = tmpMobiusData << remainder;
+////        mobFunc.m_func[whole] |= mask;
+////    }
+
+//    Base const1 = 0xaaaaaaaa;   // 0b10101010101010101010101010101010
+//    Base const2 = 0xcccccccc;   // 0b11001100110011001100110011001100
+//    Base const3 = 0xf0f0f0f0;   // 0b11110000111100001111000011110000
+//    Base const4 = 0xff00ff00;   // 0b11111111000000001111111100000000
+//    Base const5 = 0xffff0000;   // 0b11111111111111110000000000000000
+
+//    bf g = (*this);
+
+//    Base i = 0;
+
+//    for (; i < 5 && i < m_var; i++)
 //    {
-//        unsigned int tmpMobiusData = 0;
+//        Base cons;
 
-//        for (Base j = 0; j <= i; j++)
-//        {
-//            Base tmp = j | i;
-//            if (tmp <= i) tmpMobiusData = (tmpMobiusData + (*this)[j]) % 2;
-//        }
+//        if (i == 0) cons = const1;
+//        if (i == 1) cons = const2;
+//        if (i == 2) cons = const3;
+//        if (i == 3) cons = const4;
+//        if (i == 4) cons = const5;
 
-//        Base whole = i / NUM_BIT_IN_BASE;
-//        Base remainder = i % NUM_BIT_IN_BASE;
-//        Base mask = tmpMobiusData << remainder;
-//        mobFunc.m_func[whole] |= mask;
+//        bf h (m_var, FillTypeZero);
+
+//        for (Base j = 0; j < m_len; j++)
+//            h.m_func[j] = cons;
+
+//        g = g ^ ((g >> (1 << i)) & h);
 //    }
 
-    Base const1 = 0xaaaaaaaa;   // 0b10101010101010101010101010101010
-    Base const2 = 0xcccccccc;   // 0b11001100110011001100110011001100
-    Base const3 = 0xf0f0f0f0;   // 0b11110000111100001111000011110000
-    Base const4 = 0xff00ff00;   // 0b11111111000000001111111100000000
-    Base const5 = 0xffff0000;   // 0b11111111111111110000000000000000
+//    for (; i >= 5 && i < m_var; i++)
+//    {
+//        int subBase = 1 << (i - 5); // quantity of bases with same value
 
+//        assert (m_len % subBase == 0);  // ?? subBase*2 ??
+
+//        bf h (m_var, FillTypeZero);
+
+//        bool flag = false;
+
+//        for (Base j = 0; j < m_len / subBase; j++)
+//        {
+//            for (int k = 0; k < subBase; k++)
+//            {
+//                if (!flag) h.m_func[j * subBase + k] = 0x00000000;
+//                else h.m_func[j * subBase + k] = 0xffffffff;
+//            }
+//            if (flag == true) flag = false;
+//            else flag = true;
+//        }
+
+//        g = g ^ ((g >> (1 << i)) & h);
+//    }
+
+//    return g;
+
+    bf f = (*this);
     bf g = (*this);
 
-    Base i = 0;
-
-    for (; i < 5 && i < m_var; i++)
+    for (int i = 1; i <= m_var; i++)
     {
-        Base cons;
+        int arg = 0;
 
-        if (i == 0) cons = const1;
-        if (i == 1) cons = const2;
-        if (i == 2) cons = const3;
-        if (i == 3) cons = const4;
-        if (i == 4) cons = const5;
+        Base quant = 1 << i;
 
-        bf h (m_var, FillTypeZero);
+        Base numberIter = (1 << m_var) / quant;
 
-        for (Base j = 0; j < m_len; j++)
-            h.m_func[j] = cons;
-
-        g = g ^ ((g >> (1 << i)) & h);
-    }
-
-    for (; i >= 5 && i < m_var; i++)
-    {
-        int subBase = 1 << (i - 5); // quantity of bases with same value
-
-        assert (m_len % subBase == 0);  // ?? subBase*2 ??
-
-        bf h (m_var, FillTypeZero);
-
-        bool flag = false;
-
-        for (Base j = 0; j < m_len / subBase; j++)
+        for (int j = 0; j < numberIter; j++)
         {
-            for (int k = 0; k < subBase; k++)
+            for (int k = 0; k < quant / 2; k++)
             {
-                if (!flag) h.m_func[j * subBase + k] = 0x00000000;
-                else h.m_func[j * subBase + k] = 0xffffffff;
+                g.m_func[arg] = f.m_func[arg];
+                arg++;
             }
-            if (flag == true) flag = false;
-            else flag = true;
-        }
 
-        g = g ^ ((g >> (1 << i)) & h);
+            for (int k = 0; k < quant / 2; k++)
+            {
+                g.m_func[arg] = f.m_func[arg] ^ f.m_func[arg - (quant / 2)];
+                arg++;
+            }
+        }
+        f = g;
     }
 
     return g;
