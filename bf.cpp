@@ -273,11 +273,13 @@ bf bf::mobius() const
 
     // initialiation data for mobius
 
-    Base const1 = 0xaaaaaaaa;   // 0b10101010101010101010101010101010
-    Base const2 = 0xcccccccc;   // 0b11001100110011001100110011001100
-    Base const3 = 0xf0f0f0f0;   // 0b11110000111100001111000011110000
-    Base const4 = 0xff00ff00;   // 0b11111111000000001111111100000000
-    Base const5 = 0xffff0000;   // 0b11111111111111110000000000000000
+    //    Base const1 = 0xaaaaaaaa;   // 0b10101010101010101010101010101010
+    //    Base const2 = 0xcccccccc;   // 0b11001100110011001100110011001100
+    //    Base const3 = 0xf0f0f0f0;   // 0b11110000111100001111000011110000
+    //    Base const4 = 0xff00ff00;   // 0b11111111000000001111111100000000
+    //    Base const5 = 0xffff0000;   // 0b11111111111111110000000000000000
+
+    Base cons[5] = {0xaaaaaaaa, 0xcccccccc, 0xf0f0f0f0, 0xff00ff00, 0xffff0000};
 
     bf g = (*this);
 
@@ -285,20 +287,12 @@ bf bf::mobius() const
 
     for (; i < 5 && i < m_var; i++)
     {
-        Base cons;
-
-        if (i == 0) cons = const1;
-        if (i == 1) cons = const2;
-        if (i == 2) cons = const3;
-        if (i == 3) cons = const4;
-        if (i == 4) cons = const5;
-
         bf h (m_var, FillTypeZero);
 
-        for (Base j = 0; j < m_len; j++)
-            h.m_func[j] = cons;
+        h = g >> (1 << i);
 
-        g = g ^ ((g >> (1 << i)) & h);  // ?
+        for (Base j = 0; j < m_len; j++)
+            g.m_func[j] = g.m_func[j] ^ (h.m_func[j] & cons[i]);
     }
 
     for (; i < m_var; i++)
@@ -307,22 +301,15 @@ bf bf::mobius() const
 
         assert (m_len % subBase == 0);  // ?? subBase*2 ??
 
-        bf h (m_var, FillTypeZero);
-
         bool flag = false;
 
         for (Base j = 0; j < m_len / subBase; j++)
         {
-            for (int k = 0; k < subBase; k++)
-            {
-                if (!flag) h.m_func[j * subBase + k] = 0x00000000;
-                else h.m_func[j * subBase + k] = 0xffffffff;
-            }
-            if (flag == true) flag = false;
-            else flag = true;
-        }
+            for (int k = 0; k < subBase && flag; k++)
+                g.m_func[j * subBase + k] ^= g.m_func[j * subBase - subBase + k];
 
-        g = g ^ ((g >> (1 << i)) & h); // младшую часть оставляю, а старшую зменяю суммой
+            flag = !flag;
+        }
     }
 
     return g;
