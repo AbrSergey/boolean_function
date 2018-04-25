@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <math.h>
 #include <bf.h>
-
+#include <string>
 bf::bf() : m_func (NULL), m_var(0), m_len(0) {}
 
 bf::bf(std::string str)
@@ -313,6 +313,37 @@ bf bf::mobius() const
     }
 
     return g;
+}
+
+void bf::printAnf() const
+{
+    Base countArg = 1 << m_var;
+
+    std::string ss= "";
+
+//    bool flag = true;
+
+    for (Base i = 0; i < countArg; i++)
+    {
+        if ((*this)[i] == 1)
+        {
+            for (Base j = 0; j < m_var; j++)
+            {
+                Base mask = 1 << j;
+                if ((i & mask) != 0)
+                    ss += (char)('a'+j);
+            }
+            ss += "+";
+        }
+    }
+
+    if (ss[0] == '+')
+        ss.erase(ss.begin());
+
+    if (ss[ss.length() - 1] == '+')
+        ss.erase(ss.end() - 1);
+
+    std::cout << ss;
 }
 
 void bf::print() const

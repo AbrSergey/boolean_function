@@ -48,6 +48,8 @@ public:
 
     bf mobius() const; // Mobius function. It make the boolean values and print them
 
+    void printAnf () const;
+
     void print() const;
 
     Base var () const;

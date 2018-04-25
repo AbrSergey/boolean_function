@@ -34,7 +34,7 @@ void testWeight ()
 
 void testMobius ()
 {
-    int q = 30;
+    int q = 4;
 
     for (int i = 0; i < 1; i++)
     {
@@ -42,14 +42,18 @@ void testMobius ()
 
         bf y = x.mobius();
 
-//        x.print();
+        x.print();
 
-//        y.print();
+        y.print();
 
         bf z = y.mobius();
 
         if (z == x) cout << "TRUE" << endl;
         else cout << "False" << endl;
+
+        y.printAnf();
+
+        std::cout << endl;
     }
 }
 
