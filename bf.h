@@ -15,7 +15,7 @@ enum FillType
 class bf
 {
 private:
-    Base *m_func; // value of function
+    Base * m_func; // value of function
 
     Base m_var; // number of variable. MAX m_var = 31
 
@@ -47,6 +47,8 @@ public:
     unsigned int weight () const; // MAX weight = 2147483648
 
     bf mobius() const; // Mobius function. It make the boolean values and print them
+
+    void walshHadardTransform () const; // Walsh–Hadamard transform
 
     Base degree () const;
 

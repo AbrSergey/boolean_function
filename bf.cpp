@@ -315,6 +315,46 @@ bf bf::mobius() const
     return g;
 }
 
+void bf::walshHadardTransform() const
+{
+    Base numberValues = 1 << m_var;
+
+    // create characteristic sequence
+
+    int * coefficients = new int [numberValues];
+
+    for (Base i = 0; i < numberValues; i++)
+        if ((*this)[i] == 0) coefficients[i] = 1;
+        else coefficients[i] = -1;
+
+    // scheme of Green
+
+    for (Base i = 0; i < m_var; i++)
+    {
+        int * coeffTmp = new int [numberValues];
+
+        for (Base j = 0; j < numberValues; j++) coeffTmp[j] = coefficients[j];
+
+        Base subBase = 1 << i;
+
+        for (Base j = 0; j < numberValues - subBase; j += (1 << subBase))
+        {
+            for (Base k = 0; k < subBase; k++)
+            {
+                coefficients[j + k] = coeffTmp[j + k] + coeffTmp[j + subBase + k];
+                coefficients[j + subBase + k] = coeffTmp[j + k] - coefficients[j + subBase + k];
+            }
+        }
+    }
+
+    // print
+
+    for (Base i = 0; i < numberValues; i++)
+        std::cout << coefficients[i] << " ";
+
+    std::cout << std::endl;
+}
+
 Base bf::degree() const
 {
     // calculate transformation of mobius

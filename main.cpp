@@ -34,7 +34,7 @@ void testWeight ()
 
 void testMobius ()
 {
-    int q = 3;
+//    int q = 3;
 
     for (int i = 0; i < 1; i++)
     {
@@ -63,7 +63,11 @@ int main()
 {
 //    testWeight();
 
-    testMobius();
+//    testMobius();
+
+    bf x(10);
+
+    x.walshHadardTransform(); // как быть многими переменными?
 
     return 0;
 }
