@@ -48,7 +48,9 @@ public:
 
     bf mobius() const; // Mobius function. It make the boolean values and print them
 
-    void printAnf () const;
+    Base degree () const;
+
+    void printAnf () const; // input is function.mobius()
 
     void print() const;
 

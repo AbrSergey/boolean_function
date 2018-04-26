@@ -34,11 +34,11 @@ void testWeight ()
 
 void testMobius ()
 {
-    int q = 4;
+    int q = 3;
 
     for (int i = 0; i < 1; i++)
     {
-        bf x(q);
+        bf x("01100000");
 
         bf y = x.mobius();
 
@@ -46,14 +46,16 @@ void testMobius ()
 
         y.print();
 
-        bf z = y.mobius();
+//        bf z = y.mobius();
+//        if (z == x) cout << "TRUE" << endl;
+//        else cout << "False" << endl;
 
-        if (z == x) cout << "TRUE" << endl;
-        else cout << "False" << endl;
+        // Anf
+        std::cout << "ANF = ";
+        x.printAnf();
 
-        y.printAnf();
-
-        std::cout << endl;
+        // degree
+        std::cout << "degree = " << x.degree() << endl;
     }
 }
 

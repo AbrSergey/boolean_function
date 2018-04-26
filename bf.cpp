@@ -289,7 +289,7 @@ bf bf::mobius() const
     {
         bf h (m_var, FillTypeZero);
 
-        h = g >> (1 << i);
+        h = g >> (1 << i);  // what for ?
 
         for (Base j = 0; j < m_len; j++)
             g.m_func[j] = g.m_func[j] ^ (h.m_func[j] & cons[i]);
@@ -315,35 +315,64 @@ bf bf::mobius() const
     return g;
 }
 
+Base bf::degree() const
+{
+    // calculate transformation of mobius
+    bf mob = (*this).mobius();
+
+    Base max = 0;   // degree
+
+    Base count = 1 << m_var;
+
+    for (Base i = 1; i < count; i++)
+        if (mob[i] == 1)
+        {
+            // calculate quantity 1 in argument i
+            Base countOne = 0;
+            Base tmp = i;
+            for (; tmp; countOne++) tmp &= (tmp - 1);
+
+            // compare of old and new meaning of degree in monom
+            if (countOne > max) max = countOne;
+        }
+
+    return max;
+}
+
 void bf::printAnf() const
 {
-    Base countArg = 1 << m_var;
+    // calculate transformation of mobius
+    bf mob = (*this).mobius();
 
-    std::string ss= "";
+    std::string outputLine= ""; // output data line
 
-//    bool flag = true;
+    if (mob[0] == 1) outputLine = "1+";
 
-    for (Base i = 0; i < countArg; i++)
-    {
-        if ((*this)[i] == 1)
+    Base count = 1 << m_var;
+
+    for (Base i = 1; i < count; i++)
+        if (mob[i] == 1)    // find the argument for which the function is 1
         {
             for (Base j = 0; j < m_var; j++)
             {
+                // construct outputLine for this monom
                 Base mask = 1 << j;
                 if ((i & mask) != 0)
-                    ss += (char)('a'+j);
+                    outputLine += (char)('a'+j);
             }
-            ss += "+";
+            outputLine += "+";
         }
-    }
 
-    if (ss[0] == '+')
-        ss.erase(ss.begin());
+    // erase unnecessary sign in begin of outputLine
+    if (outputLine[0] == '+')
+        outputLine.erase(outputLine.begin());
 
-    if (ss[ss.length() - 1] == '+')
-        ss.erase(ss.end() - 1);
+    // erase unnecessary sign in end of outputLine
+    if (outputLine[outputLine.length() - 1] == '+')
+        outputLine.erase(outputLine.end() - 1);
 
-    std::cout << ss;
+    // print
+    std::cout << outputLine << std::endl;
 }
 
 void bf::print() const
