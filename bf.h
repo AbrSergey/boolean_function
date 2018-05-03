@@ -48,7 +48,7 @@ public:
 
     bf mobius() const; // Mobius function. It make the boolean values and print them
 
-    void walshHadardTransform () const; // Walsh–Hadamard transform
+    int * walshHadardTransform() const; // Walsh–Hadamard transform
 
     Base degree () const;
 

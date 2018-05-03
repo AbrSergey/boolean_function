@@ -315,7 +315,7 @@ bf bf::mobius() const
     return g;
 }
 
-void bf::walshHadardTransform() const
+int * bf::walshHadardTransform() const
 {
     Base numberValues = 1 << m_var;
 
@@ -331,28 +331,22 @@ void bf::walshHadardTransform() const
 
     for (Base i = 0; i < m_var; i++)
     {
-        int * coeffTmp = new int [numberValues];
-
-        for (Base j = 0; j < numberValues; j++) coeffTmp[j] = coefficients[j];
-
         Base subBase = 1 << i;
 
-        for (Base j = 0; j < numberValues - subBase; j += (1 << subBase))
+        for (Base j = 0; j < numberValues - subBase; j += (subBase << 1))
         {
             for (Base k = 0; k < subBase; k++)
             {
-                coefficients[j + k] = coeffTmp[j + k] + coeffTmp[j + subBase + k];
-                coefficients[j + subBase + k] = coeffTmp[j + k] - coefficients[j + subBase + k];
+                int tmpData = coefficients[j + k];
+                coefficients[j + k] = coefficients[j + k] + coefficients[j + subBase + k];
+                coefficients[j + subBase + k] = tmpData - coefficients[j + subBase + k];
             }
         }
     }
 
-    // print
+    // return pointer to int[]
 
-    for (Base i = 0; i < numberValues; i++)
-        std::cout << coefficients[i] << " ";
-
-    std::cout << std::endl;
+    return coefficients;
 }
 
 Base bf::degree() const

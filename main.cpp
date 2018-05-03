@@ -59,17 +59,28 @@ void testMobius ()
     }
 }
 
+void walshHadardTransform()
+{
+    bf x("0001000100011110000100010001111000010001000111101110111011100001");
+
+    int * p = x.walshHadardTransform();
+
+    for (int i = 0; i < (1 << x.var()); i++)
+        std::cout << p[i] << " ";
+
+    std::cout << std::endl;
+}
+
 int main()
 {
 //    testWeight();
 
 //    testMobius();
 
-    bf x(10);
+    walshHadardTransform();
 
-    x.walshHadardTransform(); // как быть многими переменными?
+
 
     return 0;
 }
-
-//сделать нормальный тест для мобиуса
+// написать нелинейность, наилучшее афинное приближение, наибольший порядок корреляционной иммунности
