@@ -50,6 +50,8 @@ public:
 
     int * walshHadardTransform() const; // Walsh–Hadamard transform
 
+    int highCorIm() const;
+
     Base degree () const;
 
     void printAnf () const; // input is function.mobius()

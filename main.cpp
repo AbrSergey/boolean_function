@@ -79,6 +79,12 @@ int main()
 
 //    walshHadardTransform();
 
+    bf x("01011010");
+
+    Base m = x.highCorIm();
+
+    std::cout << "m = " << m << std::endl;
+
     return 0;
 }
 // написать нелинейность, наилучшее афинное приближение, наибольший порядок корреляционной иммунности

@@ -351,16 +351,20 @@ int * bf::walshHadardTransform() const
 
 int bf::highCorIm() const
 {
-    for (Base k = 1; k <= m_var; k++)
+    int * F = (*this).walshHadardTransform();
+
+    Base k;
+
+    for (k = 1; k < m_var; k++)
     {
         Base a = ((1 << k) - 1) << (m_var - k);
+
+        if (F[a] != 0) return k - 1;
 
         for (Base i = 1; i < m_var; i++)
         {
             Base b = (a + 1) & a;
-
             Base tmp = (b - 1) ^ a;
-
             Base w = 0;
 
             while (tmp != 0)
@@ -369,15 +373,13 @@ int bf::highCorIm() const
                 w++;
             }
 
-            Base c = w - 2;
+            a = (((((a + 1) ^ a) << 1) + 1) << (w - 2)) ^ b;
 
-            a = (((((a + 1) ^ a) << 1) + 1) << c) ^ b;
-
-            //
+            if (F[a] != 0) return k - 1;
         }
     }
 
-    // ?
+    return k;
 }
 
 Base bf::degree() const
