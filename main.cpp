@@ -77,9 +77,7 @@ int main()
 
 //    testMobius();
 
-    walshHadardTransform();
-
-
+//    walshHadardTransform();
 
     return 0;
 }

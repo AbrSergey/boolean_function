@@ -349,6 +349,37 @@ int * bf::walshHadardTransform() const
     return coefficients;
 }
 
+int bf::highCorIm() const
+{
+    for (Base k = 1; k <= m_var; k++)
+    {
+        Base a = ((1 << k) - 1) << (m_var - k);
+
+        for (Base i = 1; i < m_var; i++)
+        {
+            Base b = (a + 1) & a;
+
+            Base tmp = (b - 1) ^ a;
+
+            Base w = 0;
+
+            while (tmp != 0)
+            {
+                tmp = tmp & (tmp - 1);
+                w++;
+            }
+
+            Base c = w - 2;
+
+            a = (((((a + 1) ^ a) << 1) + 1) << c) ^ b;
+
+            //
+        }
+    }
+
+    // ?
+}
+
 Base bf::degree() const
 {
     // calculate transformation of mobius
