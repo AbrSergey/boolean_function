@@ -79,11 +79,13 @@ int main()
 
 //    walshHadardTransform();
 
-    bf x("01011010");
+    bf x("01111010");
 
-    Base m = x.highCorIm();
+    Base m = x.nonLinearity();
 
-    std::cout << "m = " << m << std::endl;
+    std::cout << "Nf = " << m << std::endl;
+
+//    std::cout << "m = " << m << std::endl;
 
     return 0;
 }

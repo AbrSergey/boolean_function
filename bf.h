@@ -52,6 +52,10 @@ public:
 
     int highCorIm() const;
 
+    Base nonLinearity() const;
+
+    Base *bestAffineApproximation () const;
+
     Base degree () const;
 
     void printAnf () const; // input is function.mobius()

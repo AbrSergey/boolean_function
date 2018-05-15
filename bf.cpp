@@ -5,6 +5,9 @@
 #include <math.h>
 #include <bf.h>
 #include <string>
+
+int w(Base arg);  // weight modulo 2 components of the boolean vector
+
 bf::bf() : m_func (NULL), m_var(0), m_len(0) {}
 
 bf::bf(std::string str)
@@ -382,6 +385,58 @@ int bf::highCorIm() const
     return k;
 }
 
+Base bf::nonLinearity() const
+{
+    int * F = (*this).walshHadardTransform();
+    int maxCoeff = abs(F[0]);
+
+    for (Base i = 1; i < 1 << m_var; i++)
+        if (F[i] > maxCoeff)
+            maxCoeff = abs(F[i]);
+
+    Base Nf = (1 << (m_var - 1) )- (maxCoeff / 2)   ;
+
+    return Nf;
+}
+
+Base *bf::bestAffineApproximation() const
+{
+    int * F = (*this).walshHadardTransform();
+    int maxCoeff = abs(F[0]);
+    Base argCoeff = 0;
+    Base numberBusts = 1 << m_var;
+
+    for (Base i = 1; i < numberBusts; i++)
+        if (F[i] > maxCoeff)
+        {
+            maxCoeff = abs(F[i]);
+            argCoeff = i;
+        }
+
+//    std::cout << "maCoeff = " << maxCoeff << std::endl;
+//    std::cout << "argCoeff = " << argCoeff << std::endl;
+
+    Base * resVector = new Base[m_len];
+
+    for (Base i = 0; i < numberBusts; i++)
+    {
+        Base tmp = i & argCoeff;
+        int x = w(tmp);
+        int whole = i / NUM_BIT_IN_BASE;
+        int remainder = i % NUM_BIT_IN_BASE;
+        resVector[whole] |= x << remainder;
+    }
+
+    std::cout << "resVector = ";
+    for (Base i = 0; i < m_len; i++)
+        std::cout << resVector[i] << std::endl;
+    std::cout << std::endl;
+
+    Base Nf = (1 << (m_var - 1) )- (maxCoeff / 2)   ;
+
+    return resVector;
+}
+
 Base bf::degree() const
 {
     // calculate transformation of mobius
@@ -481,4 +536,17 @@ void bf::print() const
 Base bf::var() const
 {
     return m_var;
+}
+
+int w(Base arg)
+{
+    int x = arg ^ (arg >> 1);
+    x = x ^ (x >> 2);
+    x = x ^ (x >> 4);
+    x = x ^ (x >> 8);
+    x = x ^ (x >> 16);
+    x = x & 0x1;
+
+    assert (x == 0x0 || x == 0x1);
+    return x;
 }
