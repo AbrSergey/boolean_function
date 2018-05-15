@@ -390,7 +390,7 @@ Base bf::nonLinearity() const
     int * F = (*this).walshHadardTransform();
     int maxCoeff = abs(F[0]);
 
-    for (Base i = 1; i < 1 << m_var; i++)
+    for (int i = 1; i < (1 << m_var); i++)
         if (F[i] > maxCoeff)
             maxCoeff = abs(F[i]);
 
@@ -413,9 +413,6 @@ Base *bf::bestAffineApproximation() const
             argCoeff = i;
         }
 
-//    std::cout << "maCoeff = " << maxCoeff << std::endl;
-//    std::cout << "argCoeff = " << argCoeff << std::endl;
-
     Base * resVector = new Base[m_len];
 
     for (Base i = 0; i < numberBusts; i++)
@@ -424,15 +421,11 @@ Base *bf::bestAffineApproximation() const
         int x = w(tmp);
         int whole = i / NUM_BIT_IN_BASE;
         int remainder = i % NUM_BIT_IN_BASE;
+
+        if (F[argCoeff] < 0) x = x ^ 0x1;
+
         resVector[whole] |= x << remainder;
     }
-
-    std::cout << "resVector = ";
-    for (Base i = 0; i < m_len; i++)
-        std::cout << resVector[i] << std::endl;
-    std::cout << std::endl;
-
-    Base Nf = (1 << (m_var - 1) )- (maxCoeff / 2)   ;
 
     return resVector;
 }
@@ -536,6 +529,11 @@ void bf::print() const
 Base bf::var() const
 {
     return m_var;
+}
+
+Base bf::len() const
+{
+    return m_len;
 }
 
 int w(Base arg)

@@ -63,6 +63,8 @@ public:
     void print() const;
 
     Base var () const;
+
+    Base len () const;
 };
 
 #endif // BF_H

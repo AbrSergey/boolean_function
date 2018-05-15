@@ -71,6 +71,38 @@ void walshHadardTransform()
     std::cout << std::endl;
 }
 
+void hiCorIm()
+{
+    bf x("01111010");
+
+    Base m = x.highCorIm();
+
+    std::cout << "highCorIm = " << m << std::endl;
+}
+
+void nonLiner()
+{
+    bf x("01111010");
+
+    Base m = x.nonLinearity();
+
+    std::cout << "Nf = " << m << std::endl;
+}
+
+void bestApprox()
+{
+    bf x("01111010");
+
+    Base * resVector = new Base[x.len()];
+
+    resVector = x.bestAffineApproximation();
+
+    std::cout << "resVector = ";
+
+    for (Base i = 0; i < x.len(); i++)
+        std::cout << resVector[i] << std::endl;
+}
+
 int main()
 {
 //    testWeight();
@@ -79,13 +111,11 @@ int main()
 
 //    walshHadardTransform();
 
-    bf x("01111010");
+    hiCorIm();
 
-    Base m = x.nonLinearity();
+//    nonLiner();
 
-    std::cout << "Nf = " << m << std::endl;
-
-//    std::cout << "m = " << m << std::endl;
+//    bestApprox();
 
     return 0;
 }
