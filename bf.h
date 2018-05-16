@@ -54,7 +54,11 @@ public:
 
     Base nonLinearity() const;
 
-    Base *bestAffineApproximation () const;
+    Base * bestAffineApproximation () const;
+
+    int *autocorrelation() const;
+
+    int perfectNonlinearity() const;
 
     Base degree () const;
 

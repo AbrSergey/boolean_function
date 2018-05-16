@@ -61,7 +61,7 @@ void testMobius ()
 
 void walshHadardTransform()
 {
-    bf x("0001000100011110000100010001111000010001000111101110111011100001");
+    bf x("0111");
 
     int * p = x.walshHadardTransform();
 
@@ -103,6 +103,27 @@ void bestApprox()
         std::cout << resVector[i] << std::endl;
 }
 
+void autocor()
+{
+    bf x("0111");
+
+    int * p = x.autocorrelation();
+
+    for (int i = 0; i < (1 << x.var()); i++)
+        std::cout << p[i] << " ";
+
+    std::cout << std::endl;
+}
+
+void perfNonl()
+{
+    bf x("0111");
+
+    int p = x.perfectNonlinearity();
+
+    std::cout << p << std::endl;
+}
+
 int main()
 {
 //    testWeight();
@@ -111,11 +132,15 @@ int main()
 
 //    walshHadardTransform();
 
-    hiCorIm();
+//    hiCorIm();
 
 //    nonLiner();
 
 //    bestApprox();
+
+//    autocor();
+
+    perfNonl();
 
     return 0;
 }

@@ -399,7 +399,7 @@ Base bf::nonLinearity() const
     return Nf;
 }
 
-Base *bf::bestAffineApproximation() const
+Base * bf::bestAffineApproximation() const
 {
     int * F = (*this).walshHadardTransform();
     int maxCoeff = abs(F[0]);
@@ -428,6 +428,52 @@ Base *bf::bestAffineApproximation() const
     }
 
     return resVector;
+}
+
+int * bf::autocorrelation() const
+{
+    int * F = (*this).walshHadardTransform();
+
+    Base numberValues = 1 << m_var;
+
+    for (Base i = 0; i < numberValues; i++) F[i] *= F[i];
+
+    // scheme of Green
+
+    for (Base i = 0; i < m_var; i++)
+    {
+        Base subBase = 1 << i;
+
+        for (Base j = 0; j < numberValues - subBase; j += (subBase << 1))
+        {
+            for (Base k = 0; k < subBase; k++)
+            {
+                int tmpData = F[j + k];
+                F[j + k] = F[j + k] + F[j + subBase + k];
+                F[j + subBase + k] = tmpData - F[j + subBase + k];
+            }
+        }
+    }
+
+    // divide into 2**(-n)
+
+    for (Base i = 0; i < numberValues; i++) F[i] = F[i] / numberValues;
+
+    return F;
+}
+
+int bf::perfectNonlinearity() const
+{
+    assert(m_var >= 2);
+
+    int * F = (*this).autocorrelation();
+
+    int max = F[1];
+
+    for (int i = 2; i < 1 << m_var; i++)
+        if (F[i] > max) max = F[i];
+
+    return (1 << (m_var - 2)) - (max / 4);
 }
 
 Base bf::degree() const
