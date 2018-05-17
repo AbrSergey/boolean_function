@@ -491,6 +491,42 @@ int bf::perfectNonlinearity() const
     return (1 << (m_var - 2)) - (max >> 2);
 }
 
+int bf::maxOrderPrevalenceCritetion() const
+{
+    int * F = (*this).autocorrelation();
+
+    Base k;
+
+    for (k = 1; k < m_var; k++)
+    {
+        Base mask = (1 << k) - 1;
+
+        Base a = mask << (m_var - k);
+
+        if (F[a] != 0) return k - 1;
+
+        while (a != mask)
+        {
+            Base b = (a + 1) & a;
+            Base tmp = (b - 1) ^ a;
+            Base w = 0;
+
+            while (tmp != 0)
+            {
+                tmp = tmp & (tmp - 1);
+                w++;
+            }
+
+            a = (((((a + 1) ^ a) << 1) + 1) << (w - 2)) ^ b;
+
+            if (F[a] != 0) return k - 1;
+        }
+    }
+
+    if (F[(1 << m_var) - 1] == 0) return k;
+    else return k - 1;
+}
+
 Base bf::degree() const
 {
     // calculate transformation of mobius

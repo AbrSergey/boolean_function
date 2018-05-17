@@ -60,6 +60,8 @@ public:
 
     int perfectNonlinearity() const;
 
+    int maxOrderPrevalenceCritetion () const;
+
     Base degree () const;
 
     void printAnf () const; // input is function.mobius()

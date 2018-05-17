@@ -73,7 +73,7 @@ void walshHadardTransform()
 
 void f()
 {
-    bf x("00111010");
+    bf x("0001000100011110000100010001111000010001000111101110111011100001");
 
     Base m = x.highCorIm();
 
@@ -115,6 +115,11 @@ void f()
     int k = x.perfectNonlinearity();
 
     std::cout << k << std::endl;
+
+
+    std::cout << "maxOrderPrevalenceCritetion = " << x.maxOrderPrevalenceCritetion();
+
+    std::cout << std::endl;
 }
 
 int main()
