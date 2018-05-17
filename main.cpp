@@ -61,7 +61,7 @@ void testMobius ()
 
 void walshHadardTransform()
 {
-    bf x("0111");
+    bf x(10, FillTypeOne);
 
     int * p = x.walshHadardTransform();
 
@@ -71,57 +71,50 @@ void walshHadardTransform()
     std::cout << std::endl;
 }
 
-void hiCorIm()
+void f()
 {
-    bf x("01111010");
+    bf x("00111010");
 
     Base m = x.highCorIm();
 
     std::cout << "highCorIm = " << m << std::endl;
-}
 
-void nonLiner()
-{
-    bf x("01111010");
 
-    Base m = x.nonLinearity();
+
+     m = x.nonLinearity();
 
     std::cout << "Nf = " << m << std::endl;
-}
 
-void bestApprox()
-{
-    bf x("01111010");
 
-    Base * resVector = new Base[x.len()];
 
-    resVector = x.bestAffineApproximation();
+//    Base * resVector = new Base[x.len()];
 
-    std::cout << "resVector = ";
+    x.bestAffineApproximation();
 
-    for (Base i = 0; i < x.len(); i++)
-        std::cout << resVector[i] << std::endl;
-}
+//    std::cout << "bestAffineApproximation resVector = ";
 
-void autocor()
-{
-    bf x("0111");
+//    for (Base i = 0; i < x.len(); i++)
+//        std::cout << resVector[i] << std::endl;
+//    std::cout << std::endl;
+
+
 
     int * p = x.autocorrelation();
+
+    std::cout << "autocorrelation = ";
 
     for (int i = 0; i < (1 << x.var()); i++)
         std::cout << p[i] << " ";
 
     std::cout << std::endl;
-}
 
-void perfNonl()
-{
-    bf x("0111");
 
-    int p = x.perfectNonlinearity();
 
-    std::cout << p << std::endl;
+    std::cout << "perfectNonlinearity = ";
+
+    int k = x.perfectNonlinearity();
+
+    std::cout << k << std::endl;
 }
 
 int main()
@@ -134,13 +127,7 @@ int main()
 
 //    hiCorIm();
 
-//    nonLiner();
-
-//    bestApprox();
-
-//    autocor();
-
-    perfNonl();
+    f();
 
     return 0;
 }

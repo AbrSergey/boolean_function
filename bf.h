@@ -54,7 +54,7 @@ public:
 
     Base nonLinearity() const;
 
-    Base * bestAffineApproximation () const;
+    void bestAffineApproximation() const;
 
     int *autocorrelation() const;
 

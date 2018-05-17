@@ -360,11 +360,13 @@ int bf::highCorIm() const
 
     for (k = 1; k < m_var; k++)
     {
-        Base a = ((1 << k) - 1) << (m_var - k);
+        Base mask = (1 << k) - 1;
+
+        Base a = mask << (m_var - k);
 
         if (F[a] != 0) return k - 1;
 
-        for (Base i = 1; i < m_var; i++)
+        while (a != mask)
         {
             Base b = (a + 1) & a;
             Base tmp = (b - 1) ^ a;
@@ -382,7 +384,8 @@ int bf::highCorIm() const
         }
     }
 
-    return k;
+    if (F[(1 << m_var) - 1] == 0) return k;
+    else return k - 1;
 }
 
 Base bf::nonLinearity() const
@@ -391,15 +394,15 @@ Base bf::nonLinearity() const
     int maxCoeff = abs(F[0]);
 
     for (int i = 1; i < (1 << m_var); i++)
-        if (F[i] > maxCoeff)
+        if (abs(F[i]) > maxCoeff)
             maxCoeff = abs(F[i]);
 
-    Base Nf = (1 << (m_var - 1) )- (maxCoeff / 2)   ;
+    Base Nf = (1 << (m_var - 1) )- (maxCoeff / 2);
 
     return Nf;
 }
 
-Base * bf::bestAffineApproximation() const
+void bf::bestAffineApproximation() const
 {
     int * F = (*this).walshHadardTransform();
     int maxCoeff = abs(F[0]);
@@ -407,27 +410,38 @@ Base * bf::bestAffineApproximation() const
     Base numberBusts = 1 << m_var;
 
     for (Base i = 1; i < numberBusts; i++)
-        if (F[i] > maxCoeff)
+        if (abs(F[i]) > maxCoeff)
         {
             maxCoeff = abs(F[i]);
             argCoeff = i;
         }
 
-    Base * resVector = new Base[m_len];
+    std::cout << "bestAffineApproximation = ";
 
-    for (Base i = 0; i < numberBusts; i++)
+    for (Base i = 0; i < m_var; i++)
     {
-        Base tmp = i & argCoeff;
-        int x = w(tmp);
-        int whole = i / NUM_BIT_IN_BASE;
-        int remainder = i % NUM_BIT_IN_BASE;
-
-        if (F[argCoeff] < 0) x = x ^ 0x1;
-
-        resVector[whole] |= x << remainder;
+        bool flag = (1 << i) & argCoeff;
+        if (flag)
+            std::cout << (char)('x'+i) << "+";
     }
+    if (F[argCoeff] < 0) std::cout << "1" << std::endl;
+    else std::cout << "0" << std::endl;
 
-    return resVector;
+//    Base * resVector = new Base[m_len];
+
+//    for (Base i = 0; i < numberBusts; i++)
+//    {
+//        Base tmp = i & argCoeff;
+//        int x = w(tmp);
+//        int whole = i / NUM_BIT_IN_BASE;
+//        int remainder = i % NUM_BIT_IN_BASE;
+
+//        if (F[argCoeff] < 0) x = x ^ 0x1;
+
+//        resVector[whole] |= x << remainder;
+//    }
+
+//    return resVector;
 }
 
 int * bf::autocorrelation() const
@@ -457,7 +471,8 @@ int * bf::autocorrelation() const
 
     // divide into 2**(-n)
 
-    for (Base i = 0; i < numberValues; i++) F[i] = F[i] / numberValues;
+    for (Base i = 0; i < numberValues; i++)
+        F[i] = F[i] >> m_var;
 
     return F;
 }
@@ -468,12 +483,12 @@ int bf::perfectNonlinearity() const
 
     int * F = (*this).autocorrelation();
 
-    int max = F[1];
+    int max = abs(F[1]);
 
     for (int i = 2; i < 1 << m_var; i++)
-        if (F[i] > max) max = F[i];
+        if (abs(F[i]) > max) max = abs(F[i]);
 
-    return (1 << (m_var - 2)) - (max / 4);
+    return (1 << (m_var - 2)) - (max >> 2);
 }
 
 Base bf::degree() const
